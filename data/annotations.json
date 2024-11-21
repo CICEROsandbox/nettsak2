@@ -5,6 +5,15 @@
       "text": "Dissolution of Soviet Union",
       "yOffset": -40
     },
-    ...
+    {
+      "year": 2009,
+      "text": "Global Financial Crisis", 
+      "yOffset": 40
+    },
+    {
+      "year": 2020,
+      "text": "COVID-19 Pandemic",
+      "yOffset": -40
+    }
   ]
 }
