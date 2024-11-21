@@ -1,27 +1,25 @@
 async function initAnimations() {
-    const { path, pathLength, svg, xScale, yScale, data } = await createGraph();
-    
     gsap.registerPlugin(ScrollTrigger);
+    
+    const graphData = await createGraph();
+    if (!graphData) return;
 
-    // Create main timeline
-    const tl = gsap.timeline({
+    const { path, pathLength, svg, xScale, yScale } = graphData;
+
+    // Animate line drawing
+    gsap.to(path.node(), {
         scrollTrigger: {
             trigger: ".scroll-container",
             start: "top top",
             end: "bottom bottom",
             scrub: 1
-        }
-    });
-
-    // Animate line drawing
-    tl.to(path.node(), {
+        },
         strokeDashoffset: 0,
         duration: 1,
         onUpdate: function() {
             const progress = 1 - (path.node().style.strokeDashoffset.replace("px", "") / pathLength);
             const currentX = progress * (xScale.range()[1] - xScale.range()[0]) + xScale.range()[0];
             
-            // Update dots visibility based on line progress
             svg.selectAll(".dot").style("opacity", function(d) {
                 return xScale(d.year) <= currentX ? 1 : 0;
             });
@@ -52,5 +50,4 @@ async function initAnimations() {
     });
 }
 
-// Initialize when document is ready
 document.addEventListener('DOMContentLoaded', initAnimations);
