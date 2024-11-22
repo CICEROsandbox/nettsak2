@@ -60,7 +60,7 @@ p {
 .text-box {
     position: absolute;
     width: 300px;
-    background: rgba(17, 24, 39, 0.9);
+    background: rgba(17, 24, 39, 0.95); /* Made slightly more opaque */
     padding: 1.5rem;
     border-radius: 8px;
     border: 1px solid rgba(96, 165, 250, 0.2);
@@ -70,28 +70,27 @@ p {
     z-index: 10;
 }
 
-.text-box.left {
-    left: 5%;
-}
-
-.text-box.right {
-    right: 5%;
-}
-
+/* Adjusted positions for each box */
 #box1 {
-    top: 20%;
+    left: 5%;
+    top: 15%; /* Early 1990s box positioned at top */
 }
 
 #box2 {
-    top: 50%;
+    right: 5%;
+    bottom: 30%; /* Financial crisis box positioned lower right */
 }
 
 #box3 {
-    top: 80%;
+    left: 5%;
+    bottom: 15%; /* COVID box positioned bottom left */
 }
 
-@media (max-width: 768px) {
-    .text-box {
-        width: 250px;
-    }
+/* Remove the generic left/right classes and use specific positioning */
+/* Remove these:
+.text-box.left {
+    left: 5%;
+}
+.text-box.right {
+    right: 5%;
 }
