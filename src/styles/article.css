@@ -78,29 +78,20 @@ p {
     right: 5%;
 }
 
-.post-scroll {
-    min-height: 100vh;
-    padding: 2rem;
-    background: #111827;
+#box1 {
+    top: 20%;
 }
 
-/* Responsive adjustments */
+#box2 {
+    top: 50%;
+}
+
+#box3 {
+    top: 80%;
+}
+
 @media (max-width: 768px) {
     .text-box {
         width: 250px;
-    }
-    
-    .text-box.left {
-        left: 2%;
-    }
-    
-    .text-box.right {
-        right: 2%;
-    }
-}
-
-@media (max-width: 480px) {
-    .text-box {
-        width: 200px;
     }
 }
