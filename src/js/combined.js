@@ -1,5 +1,3 @@
-let graphState = null;
-
 async function initAnimations() {
     gsap.registerPlugin(ScrollTrigger);
     
