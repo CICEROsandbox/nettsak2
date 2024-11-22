@@ -1,4 +1,3 @@
-// graph.js
 let graphState = null;
 
 async function createGraph() {
@@ -10,7 +9,7 @@ async function createGraph() {
             minus: +d.Minus1SD
         }));
 
-        const width = window.innerWidth * 0.9;
+        const width = window.innerWidth * 0.95;  // Adjusted to match CSS
         const height = window.innerHeight * 0.7;
         const margin = {top: 60, right: 40, bottom: 40, left: 60};
 
@@ -19,10 +18,10 @@ async function createGraph() {
 
         const svg = d3.select("#emissionsGraph")
             .append("svg")
-            .attr("viewBox", `0 0 ${width} ${height}`)  // Make SVG responsive
+            .attr("viewBox", `0 0 ${width} ${height}`)
             .attr("preserveAspectRatio", "xMidYMid meet");
 
-
+        // Rest of your graph creation code...
         const xScale = d3.scaleLinear()
             .domain(d3.extent(data, d => d.year))
             .range([margin.left, width - margin.right]);
@@ -83,7 +82,15 @@ async function createGraph() {
     }
 }
 
-// animations.js
+// Add resize handler
+let resizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+        createGraph();
+    }, 250); // Debounce resize events
+});
+
 async function initAnimations() {
     gsap.registerPlugin(ScrollTrigger);
     
