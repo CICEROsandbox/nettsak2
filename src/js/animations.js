@@ -42,6 +42,38 @@ async function initAnimations() {
             .attr("class", `highlight-${year}`);
     });
 
-    // Create animation timeline...
-    // Rest of the code remains the same
+   // Create or select boxes for the years
+    const boxes = {
+        1991: d3.select('#box1991'),
+        2008: d3.select('#box2008'),
+        2020: d3.select('#box2020'),
+    };
+
+    // Create animation timeline
+    const tl = gsap.timeline({
+        scrollTrigger: {
+            trigger: ".scroll-container",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1,
+            onUpdate: function(self) {
+                const progress = self.progress;
+                const currentX = startX + (totalWidth * progress);
+
+                // Update line and dots
+                path.attr("stroke-dashoffset", pathLength * (1 - progress));
+
+                // Check and display boxes at appropriate positions
+                Object.keys(yearPositions).forEach(year => {
+                    if (!displayedBoxes[year] && currentX >= yearPositions[year]) {
+                        boxes[year].style('opacity', 1); // Show box (assuming opacity is initially 0)
+                        displayedBoxes[year] = true;
+                        d3.select(`.highlight-${year}`).style("opacity", 1); // Show highlight
+                    }
+                });
+            }
+        }
+    });
 }
+
+document.addEventListener('DOMContentLoaded', initAnimations);
