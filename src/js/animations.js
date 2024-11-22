@@ -9,11 +9,7 @@ async function initAnimations() {
 
     const { path, pathLength, svg, xScale, data } = graphData;
 
-    // Calculate actual position for each year on the SVG
-    const year1991Pos = xScale(1991);
-    const year2008Pos = xScale(2008);
-    const year2020Pos = xScale(2020);
-
+    // Animation timeline
     gsap.to(path.node(), {
         scrollTrigger: {
             trigger: ".scroll-container",
@@ -21,35 +17,41 @@ async function initAnimations() {
             end: "bottom bottom",
             scrub: 1,
             onUpdate: function(self) {
+                // Calculate how much of the line has been drawn
                 const progress = self.progress;
+                const drawLength = pathLength * progress;
+                
+                // Get the point where the line is currently drawn to
+                const currentPoint = path.node().getPointAtLength(drawLength);
+                
+                // Find the current year based on the line's x position
+                const currentYear = xScale.invert(currentPoint.x);
                 
                 // Update line drawing
-                const currentDash = pathLength * (1 - progress);
-                path.attr("stroke-dashoffset", currentDash);
+                path.attr("stroke-dashoffset", pathLength * (1 - progress));
 
-                // Get current x position of the line end
-                const currentX = xScale.range()[0] + (xScale.range()[1] - xScale.range()[0]) * progress;
+                console.log('Current Year:', currentYear); // Debug log
 
-                // Show dots based on line progress
+                // Update both dots and boxes based on the line position
                 svg.selectAll(".dot")
                     .style("opacity", function(d) {
-                        return xScale(d.year) <= currentX ? 1 : 0;
+                        return d.year <= currentYear ? 1 : 0;
                     });
 
-                // Show boxes based on current line position
-                if (currentX >= year1991Pos) {
+                // Trigger boxes based on exact years
+                if (currentYear >= 1991) {
                     gsap.to("#box1", { opacity: 1, y: 0, duration: 0.3 });
                 } else {
                     gsap.to("#box1", { opacity: 0, y: 20, duration: 0.3 });
                 }
 
-                if (currentX >= year2008Pos) {
+                if (currentYear >= 2008) {
                     gsap.to("#box2", { opacity: 1, y: 0, duration: 0.3 });
                 } else {
                     gsap.to("#box2", { opacity: 0, y: 20, duration: 0.3 });
                 }
 
-                if (currentX >= year2020Pos) {
+                if (currentYear >= 2020) {
                     gsap.to("#box3", { opacity: 1, y: 0, duration: 0.3 });
                 } else {
                     gsap.to("#box3", { opacity: 0, y: 20, duration: 0.3 });
@@ -58,13 +60,6 @@ async function initAnimations() {
         },
         strokeDashoffset: 0,
         duration: 1
-    });
-
-    // Debug helper - log positions to verify
-    console.log('Year positions:', {
-        '1991': year1991Pos,
-        '2008': year2008Pos,
-        '2020': year2020Pos
     });
 }
 
