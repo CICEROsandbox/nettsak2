@@ -7,7 +7,7 @@ async function initAnimations() {
         return;
     }
 
-    const { path, pathLength, svg, xScale } = graphData;
+    const { path, pathLength, svg, xScale, data } = graphData;
 
     gsap.to(path.node(), {
         scrollTrigger: {
@@ -22,16 +22,18 @@ async function initAnimations() {
                 const currentDash = pathLength * (1 - progress);
                 path.attr("stroke-dashoffset", currentDash);
 
-                // Get current x position from the line's progress
+                // Calculate current position on the line
                 const currentPoint = path.node().getPointAtLength(pathLength * progress);
-                const currentYear = xScale.invert(currentPoint.x);
-
-                // Update dots after the current point
-                svg.selectAll(".dot").style("opacity", function(d) {
-                    return d.year <= currentYear ? 1 : 0;
-                });
+                
+                // Update dots visibility based on line progress
+                svg.selectAll(".dot")
+                    .style("opacity", function(d) {
+                        return xScale(d.year) <= currentPoint.x ? progress : 0;
+                    });
 
                 // Show boxes based on line position
+                const currentYear = xScale.invert(currentPoint.x);
+
                 if (currentYear >= 1991) {
                     gsap.to("#box1", { opacity: 1, y: 0, duration: 0.3 });
                 } else {
