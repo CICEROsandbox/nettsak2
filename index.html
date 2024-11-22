@@ -1,61 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global CO₂ Emissions Story</title>
-    <link rel="stylesheet" href="src/styles/article.css">
-    <link rel="stylesheet" href="src/styles/graph.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll-Based Lottie Animation</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .content {
+      flex: 1;
+      padding-right: 20px;
+    }
+
+    #animation {
+      width: 300px;
+      height: 400px;
+      position: sticky;
+      top: 20px;
+    }
+
+    .text {
+      line-height: 1.6;
+      margin-bottom: 1.5em;
+    }
+
+    .spacer {
+      height: 800px; /* Ensures there's enough content to scroll */
+    }
+  </style>
 </head>
 <body>
-    <article class="article">
-        <h1>The Rise of Global CO₂ Emissions</h1>
-        
-        <p class="lead">
-            Over the past three decades, global carbon dioxide emissions have shown a persistent upward trend.
-        </p>
-        
-        <p>
-            Since 1990, we've witnessed an unprecedented increase in global CO₂ emissions from fossil fuels.
-        </p>
-
-<div class="scroll-container">
-    <div class="sticky-container">
-        <div class="graph-container" id="emissionsGraph"></div>
-        
-        <div class="text-box" id="box1991">
-            <h3>Early 1990s Decline</h3>
-            <p>The dissolution of the Soviet Union led to a temporary decrease in global emissions.</p>
-        </div>
-        
-        <div class="text-box" id="box2008">
-            <h3>Financial Crisis Impact</h3>
-            <p>The 2008-2009 financial crisis caused a significant drop in emissions as economic activity slowed.</p>
-        </div>
-
-        <div class="text-box" id="box2020">
-            <h3>COVID-19 Pandemic</h3>
-            <p>Global lockdowns in 2020 led to a dramatic but temporary reduction in emissions.</p>
-        </div>
+  <div class="container">
+    <div class="content">
+      <h1>Fossil Fuel Emissions</h1>
+      <p class="text">Tracking the historical trends of emissions from 1990 onwards.</p>
+      <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+      <p class="text">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <div class="spacer"></div>
     </div>
-</div>
+    <div id="animation"></div>
+  </div>
 
-        <div class="post-scroll">
-            <h2>Looking Ahead</h2>
-            <p>
-                The challenge of reducing emissions while maintaining economic growth becomes increasingly critical.
-            </p>
-        </div>
-    </article>
+  <script>
+    // Load the Lottie animation from a JSON file
+    const animation = lottie.loadAnimation({
+      container: document.getElementById('animation'),
+      renderer: 'svg',
+      loop: false,
+      autoplay: false,
+      path: 'fossil-fuel-emissions.json' // Path to your external JSON file
+    });
 
-    <!-- Load external libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    
-    <!-- Load our scripts in correct order -->
-    <script src="src/js/graph.js"></script>
-    <script src="src/js/animations.js"></script>
+    // Sync animation frames to scroll position
+    window.addEventListener('scroll', () => {
+      const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      const frame = (scrollPercentage / 100) * animation.totalFrames;
+      animation.goToAndStop(frame, true);
+    });
+  </script>
 </body>
 </html>
