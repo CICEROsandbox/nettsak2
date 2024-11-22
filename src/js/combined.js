@@ -19,8 +19,9 @@ async function createGraph() {
 
         const svg = d3.select("#emissionsGraph")
             .append("svg")
-            .attr("width", width)
-            .attr("height", height);
+            .attr("viewBox", `0 0 ${width} ${height}`)  // Make SVG responsive
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
 
         const xScale = d3.scaleLinear()
             .domain(d3.extent(data, d => d.year))
