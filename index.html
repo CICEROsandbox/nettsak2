@@ -10,6 +10,7 @@
       font-family: system-ui, sans-serif;
       margin: 0;
       padding: 0;
+      background-color: #f9f9f9;
     }
 
     .container {
@@ -25,10 +26,12 @@
     }
 
     #animation {
-      width: 300px;
-      height: 400px;
+      width: 400px; /* Ensure a defined width */
+      height: 400px; /* Ensure a defined height */
       position: sticky;
       top: 20px;
+      background-color: #fff; /* Add a background for visibility */
+      border: 1px solid #ddd; /* Optional border for debugging */
     }
 
     .text {
@@ -38,6 +41,18 @@
 
     .spacer {
       height: 800px; /* Ensures there's enough content to scroll */
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      #animation {
+        width: 100%; /* Full width for smaller screens */
+        height: 300px; /* Adjust height for mobile */
+        margin-bottom: 20px;
+      }
     }
   </style>
 </head>
@@ -60,7 +75,7 @@
       renderer: 'svg',
       loop: false,
       autoplay: false,
-      path: 'https://raw.githubusercontent.com/CICEROsandbox/nettsak2/refs/heads/main/graph.json' // Update the path as per your GitHub file structure
+      path: 'https://raw.githubusercontent.com/CICEROsandbox/nettsak2/main/graph.json'
     });
 
     // Sync animation frames to scroll position
