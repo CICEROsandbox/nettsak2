@@ -1,4 +1,3 @@
-// animations.js
 async function initAnimations() {
     gsap.registerPlugin(ScrollTrigger);
     
@@ -18,25 +17,34 @@ async function initAnimations() {
             scrub: 1,
             onUpdate: function(self) {
                 const progress = self.progress;
-                const currentX = progress * (xScale.range()[1] - xScale.range()[0]) + xScale.range()[0];
                 
+                // Update line drawing
+                const currentDash = pathLength * (1 - progress);
+                path.attr("stroke-dashoffset", currentDash);
+
+                // Get current x position from the line's progress
+                const currentPoint = path.node().getPointAtLength(pathLength * progress);
+                const currentYear = xScale.invert(currentPoint.x);
+
+                // Update dots after the current point
                 svg.selectAll(".dot").style("opacity", function(d) {
-                    return xScale(d.year) <= currentX ? 1 : 0;
+                    return d.year <= currentYear ? 1 : 0;
                 });
 
-                if (currentX >= xScale(1991)) {
+                // Show boxes based on line position
+                if (currentYear >= 1991) {
                     gsap.to("#box1", { opacity: 1, y: 0, duration: 0.3 });
                 } else {
                     gsap.to("#box1", { opacity: 0, y: 20, duration: 0.3 });
                 }
 
-                if (currentX >= xScale(2008)) {
+                if (currentYear >= 2008) {
                     gsap.to("#box2", { opacity: 1, y: 0, duration: 0.3 });
                 } else {
                     gsap.to("#box2", { opacity: 0, y: 20, duration: 0.3 });
                 }
 
-                if (currentX >= xScale(2020)) {
+                if (currentYear >= 2020) {
                     gsap.to("#box3", { opacity: 1, y: 0, duration: 0.3 });
                 } else {
                     gsap.to("#box3", { opacity: 0, y: 20, duration: 0.3 });
