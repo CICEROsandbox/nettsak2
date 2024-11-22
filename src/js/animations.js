@@ -1,6 +1,6 @@
 async function initAnimations() {
     gsap.registerPlugin(ScrollTrigger);
-    
+
     const graphData = await createGraph();
     if (!graphData) {
         console.error('Failed to initialize graph');
@@ -14,14 +14,6 @@ async function initAnimations() {
     const endX = xScale(2024);
     const totalWidth = endX - startX;
 
-    // Create animation timeline
-    const tl = gsap.timeline({
-        scrollTrigger: {
-            trigger: ".scroll-container",
-            start: "top top",
-            end: "bottom bottom",
-            scrub: 1,
-            
     // Define x positions for target years
     const yearPositions = {
         1991: xScale(1991),
