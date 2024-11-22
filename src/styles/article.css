@@ -6,9 +6,20 @@ body {
 }
 
 .article {
-    max-width: 800px;
+    width: 100%;
+    max-width: 100%;
     margin: 0 auto;
-    padding: 2rem;
+}
+
+/* Text content container */
+.article > h1,
+.article > p,
+.article > h2,
+.post-scroll {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 2rem;
 }
 
 h1 {
@@ -33,12 +44,14 @@ p {
 .scroll-container {
     position: relative;
     height: 300vh;
+    width: 100%;
 }
 
 .sticky-container {
     position: sticky;
     top: 0;
     height: 100vh;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -57,11 +70,37 @@ p {
     z-index: 10;
 }
 
-.text-box.left { left: 5%; }
-.text-box.right { right: 5%; }
+.text-box.left {
+    left: 5%;
+}
+
+.text-box.right {
+    right: 5%;
+}
 
 .post-scroll {
     min-height: 100vh;
     padding: 2rem;
     background: #111827;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .text-box {
+        width: 250px;
+    }
+    
+    .text-box.left {
+        left: 2%;
+    }
+    
+    .text-box.right {
+        right: 2%;
+    }
+}
+
+@media (max-width: 480px) {
+    .text-box {
+        width: 200px;
+    }
 }
