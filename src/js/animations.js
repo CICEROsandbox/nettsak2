@@ -9,57 +9,69 @@ async function initAnimations() {
 
     const { path, pathLength, svg, xScale, data } = graphData;
 
-    // Animation timeline
-    gsap.to(path.node(), {
+    // Create separate animations for line and boxes
+    const tl = gsap.timeline({
         scrollTrigger: {
             trigger: ".scroll-container",
             start: "top top",
             end: "bottom bottom",
-            scrub: 1,
-            onUpdate: function(self) {
-                // Calculate how much of the line has been drawn
-                const progress = self.progress;
-                const drawLength = pathLength * progress;
-                
-                // Get the point where the line is currently drawn to
-                const currentPoint = path.node().getPointAtLength(drawLength);
-                
-                // Find the current year based on the line's x position
-                const currentYear = xScale.invert(currentPoint.x);
-                
-                // Update line drawing
-                path.attr("stroke-dashoffset", pathLength * (1 - progress));
+            scrub: 1
+        }
+    });
 
-                console.log('Current Year:', currentYear); // Debug log
-
-                // Update both dots and boxes based on the line position
-                svg.selectAll(".dot")
-                    .style("opacity", function(d) {
-                        return d.year <= currentYear ? 1 : 0;
-                    });
-
-                // Trigger boxes based on exact years
-                if (currentYear >= 1991) {
-                    gsap.to("#box1", { opacity: 1, y: 0, duration: 0.3 });
-                } else {
-                    gsap.to("#box1", { opacity: 0, y: 20, duration: 0.3 });
-                }
-
-                if (currentYear >= 2008) {
-                    gsap.to("#box2", { opacity: 1, y: 0, duration: 0.3 });
-                } else {
-                    gsap.to("#box2", { opacity: 0, y: 20, duration: 0.3 });
-                }
-
-                if (currentYear >= 2020) {
-                    gsap.to("#box3", { opacity: 1, y: 0, duration: 0.3 });
-                } else {
-                    gsap.to("#box3", { opacity: 0, y: 20, duration: 0.3 });
-                }
-            }
-        },
+    // Line drawing animation
+    tl.to(path.node(), {
         strokeDashoffset: 0,
-        duration: 1
+        duration: 1,
+        onUpdate: function() {
+            // Update dots based on line progress
+            const lineProgress = 1 - (path.node().style.strokeDashoffset.replace("px", "") / pathLength);
+            const currentX = xScale.range()[0] + (xScale.range()[1] - xScale.range()[0]) * lineProgress;
+            
+            svg.selectAll(".dot")
+                .style("opacity", function(d) {
+                    return xScale(d.year) <= currentX ? 1 : 0;
+                });
+        }
+    });
+
+    // Separate triggers for each box
+    ScrollTrigger.create({
+        trigger: ".scroll-container",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1,
+        onUpdate: function(self) {
+            const totalProgress = self.progress;
+            const totalYears = data[data.length - 1].year - data[0].year;
+            const currentYear = data[0].year + (totalYears * totalProgress);
+
+            // Using specific scroll points for box triggers
+            const scrollPoints = {
+                box1: (1991 - data[0].year) / totalYears,
+                box2: (2008 - data[0].year) / totalYears,
+                box3: (2020 - data[0].year) / totalYears
+            };
+
+            // Trigger boxes based on scroll progress
+            if (totalProgress >= scrollPoints.box1) {
+                gsap.to("#box1", { opacity: 1, y: 0, duration: 0.3 });
+            } else {
+                gsap.to("#box1", { opacity: 0, y: 20, duration: 0.3 });
+            }
+
+            if (totalProgress >= scrollPoints.box2) {
+                gsap.to("#box2", { opacity: 1, y: 0, duration: 0.3 });
+            } else {
+                gsap.to("#box2", { opacity: 0, y: 20, duration: 0.3 });
+            }
+
+            if (totalProgress >= scrollPoints.box3) {
+                gsap.to("#box3", { opacity: 1, y: 0, duration: 0.3 });
+            } else {
+                gsap.to("#box3", { opacity: 0, y: 20, duration: 0.3 });
+            }
+        }
     });
 }
 
