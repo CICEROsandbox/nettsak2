@@ -9,6 +9,11 @@ async function initAnimations() {
 
     const { path, pathLength, svg, xScale, data } = graphData;
 
+    // Get the min and max years for proper scaling
+    const minYear = d3.min(data, d => d.year);
+    const maxYear = d3.max(data, d => d.year);
+    const yearRange = maxYear - minYear;
+
     gsap.to(path.node(), {
         scrollTrigger: {
             trigger: ".scroll-container",
@@ -22,18 +27,16 @@ async function initAnimations() {
                 const currentDash = pathLength * (1 - progress);
                 path.attr("stroke-dashoffset", currentDash);
 
-                // Calculate current position on the line
-                const currentPoint = path.node().getPointAtLength(pathLength * progress);
-                
-                // Update dots visibility based on line progress
+                // Calculate current year based on progress
+                const currentYear = minYear + (yearRange * progress);
+
+                // Update dots visibility
                 svg.selectAll(".dot")
                     .style("opacity", function(d) {
-                        return xScale(d.year) <= currentPoint.x ? progress : 0;
+                        return d.year <= currentYear ? 1 : 0;
                     });
 
-                // Show boxes based on line position
-                const currentYear = xScale.invert(currentPoint.x);
-
+                // Show boxes at specific years
                 if (currentYear >= 1991) {
                     gsap.to("#box1", { opacity: 1, y: 0, duration: 0.3 });
                 } else {
