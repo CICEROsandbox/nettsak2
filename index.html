@@ -54,13 +54,13 @@
   </div>
 
   <script>
-    // Load the Lottie animation from a JSON file
+    // Load the Lottie animation from GitHub
     const animation = lottie.loadAnimation({
       container: document.getElementById('animation'),
       renderer: 'svg',
       loop: false,
       autoplay: false,
-      path: 'fossil-fuel-emissions.json' // Path to your external JSON file
+      path: 'https://raw.githubusercontent.com/CICEROsandbox/nettsak2/main/graph.json' // Update the path as per your GitHub file structure
     });
 
     // Sync animation frames to scroll position
