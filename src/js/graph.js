@@ -1,3 +1,4 @@
+// graph.js
 async function createGraph() {
     try {
         const data = await d3.csv('data/emissions.csv', d => ({
@@ -7,14 +8,17 @@ async function createGraph() {
             minus: +d.Minus1SD
         }));
 
-        const width = window.innerWidth * 0.9;
+        const width = window.innerWidth * 0.95;
         const height = window.innerHeight * 0.7;
         const margin = {top: 60, right: 40, bottom: 40, left: 60};
 
+        // Clear existing SVG if any
+        d3.select("#emissionsGraph").selectAll("*").remove();
+
         const svg = d3.select("#emissionsGraph")
             .append("svg")
-            .attr("width", width)
-            .attr("height", height);
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .attr("preserveAspectRatio", "xMidYMid meet");
 
         const xScale = d3.scaleLinear()
             .domain(d3.extent(data, d => d.year))
@@ -35,7 +39,7 @@ async function createGraph() {
             .y1(d => yScale(d.plus))
             .curve(d3.curveMonotoneX);
 
-        const area = svg.append("path")
+        svg.append("path")
             .datum(data)
             .attr("class", "confidence-area")
             .attr("d", areaGenerator);
@@ -45,18 +49,15 @@ async function createGraph() {
             .attr("class", "line")
             .attr("d", line);
 
-        const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d"));
-        const yAxis = d3.axisLeft(yScale);
-
         svg.append("g")
             .attr("class", "axis")
             .attr("transform", `translate(0,${height - margin.bottom})`)
-            .call(xAxis);
+            .call(d3.axisBottom(xScale).tickFormat(d3.format("d")));
 
         svg.append("g")
             .attr("class", "axis")
             .attr("transform", `translate(${margin.left},0)`)
-            .call(yAxis);
+            .call(d3.axisLeft(yScale));
 
         const dots = svg.selectAll(".dot")
             .data(data)
@@ -73,9 +74,10 @@ async function createGraph() {
 
         return { path, pathLength, svg, xScale, yScale, data };
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error creating graph:', error);
         return null;
     }
 }
 
+// Make createGraph available globally
 window.createGraph = createGraph;
