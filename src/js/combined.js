@@ -91,6 +91,8 @@ window.addEventListener('resize', () => {
     }, 250); // Debounce resize events
 });
 
+// ... previous code remains the same until initAnimations function ...
+
 async function initAnimations() {
     gsap.registerPlugin(ScrollTrigger);
     
@@ -101,48 +103,56 @@ async function initAnimations() {
     }
 
     const { path, pathLength, svg, xScale } = graphData;
+    
+    // Calculate positions for specific years
+    const yearPositions = {
+        1991: (xScale(1991) - xScale.range()[0]) / (xScale.range()[1] - xScale.range()[0]),
+        2008: (xScale(2008) - xScale.range()[0]) / (xScale.range()[1] - xScale.range()[0]),
+        2020: (xScale(2020) - xScale.range()[0]) / (xScale.range()[1] - xScale.range()[0])
+    };
 
-    // Line animation
+    // Line animation with synchronized boxes
     gsap.to(path.node(), {
         scrollTrigger: {
             trigger: ".scroll-container",
             start: "top top",
             end: "bottom bottom",
-            scrub: 1
+            scrub: 1,
+            onUpdate: function(self) {
+                const progress = self.progress;
+                const currentX = progress * (xScale.range()[1] - xScale.range()[0]) + xScale.range()[0];
+                
+                // Update dots visibility
+                svg.selectAll(".dot").style("opacity", function(d) {
+                    return xScale(d.year) <= currentX ? 1 : 0;
+                });
+
+                // Update text box visibility based on line position
+                const box1 = document.querySelector("#box1");
+                const box2 = document.querySelector("#box2");
+                const box3 = document.querySelector("#box3"); // Add a third box for COVID-19
+
+                if (progress >= yearPositions[1991]) {
+                    gsap.to(box1, { opacity: 1, y: 0, duration: 0.3 });
+                } else {
+                    gsap.to(box1, { opacity: 0, y: 20, duration: 0.3 });
+                }
+
+                if (progress >= yearPositions[2008]) {
+                    gsap.to(box2, { opacity: 1, y: 0, duration: 0.3 });
+                } else {
+                    gsap.to(box2, { opacity: 0, y: 20, duration: 0.3 });
+                }
+
+                if (progress >= yearPositions[2020]) {
+                    gsap.to(box3, { opacity: 1, y: 0, duration: 0.3 });
+                } else {
+                    gsap.to(box3, { opacity: 0, y: 20, duration: 0.3 });
+                }
+            }
         },
         strokeDashoffset: 0,
-        duration: 1,
-        onUpdate: function() {
-            const progress = 1 - (path.node().style.strokeDashoffset.replace("px", "") / pathLength);
-            const currentX = progress * (xScale.range()[1] - xScale.range()[0]) + xScale.range()[0];
-            
-            svg.selectAll(".dot").style("opacity", function(d) {
-                return xScale(d.year) <= currentX ? 1 : 0;
-            });
-        }
-    });
-
-    // Text box animations
-    gsap.to("#box1", {
-        scrollTrigger: {
-            trigger: ".scroll-container",
-            start: "33% top",
-            end: "66% top",
-            scrub: true,
-        },
-        opacity: 1,
-        y: 0,
-    });
-
-    gsap.to("#box2", {
-        scrollTrigger: {
-            trigger: ".scroll-container",
-            start: "66% top",
-            end: "100% top",
-            scrub: true,
-        },
-        opacity: 1,
-        y: 0,
+        duration: 1
     });
 }
 
